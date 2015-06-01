@@ -1,17 +1,34 @@
-jQuery(document).ready( function() {
+jQuery(document).ready( function($) {
 
-  jQuery('#f-start').click(function(){
-    jQuery('.f-welcome-container').fadeOut('fast')
-    jQuery('.steps-container').stop().fadeIn('slow')
-  })
+  $('#f-start').click(function(){
+    $('.f-welcome-container').fadeOut('fast');
+    $('.steps-container').stop().fadeIn('slow');
+  });
 
-  jQuery('#step-one-button-next').click(function(e){
-      e.preventDefault()
+  $('#f-step-one-form').submit(function(e){
+      e.preventDefault();
 
       var invoice = 'Banana';
-      jQuery(".f-loading").show()
+      $(".f-loading").show();
 
-      jQuery.ajax({
+      form_data = $(this).serializeArray();
+
+      data = {
+        action : 'get_factura',
+        csrf   : form_data[0].value,
+        rfc    : form_data[1].value,
+        order  : form_data[2].value,
+        email  : form_data[3].value,
+      }
+
+      $.post(myAjax.ajaxurl, data, function(response) {
+        console.log(response);
+      });
+
+      return false;
+
+      /*
+      $.ajax({
          type : "post",
          dataType : "json",
          url : myAjax.ajaxurl,
@@ -23,8 +40,8 @@ jQuery(document).ready( function() {
 
          console.log('ok')
       })
+      */
 
+    });
 
-    })
-
-})
+});

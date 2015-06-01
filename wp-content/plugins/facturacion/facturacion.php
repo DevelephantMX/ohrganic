@@ -9,13 +9,11 @@
    License: GPL2
    */
 
-add_action("wp_ajax_get_factura", "get_factura");
-add_action("wp_ajax_nopriv_get_factura", "get_factura");
-
 function get_factura() {
 
+  $search = $_REQUEST["search"];
   /*
-  $invoice = $_REQUEST["invoice"];
+
 
 
   if($invoice === null) {
@@ -36,12 +34,16 @@ function get_factura() {
   }
   */
 
-  echo "ok";
+  echo "csrf: " . $_REQUEST["csrf"];
+  echo "RFC: " . $_REQUEST["rfc"];
+  echo "order: " . $_REQUEST["order"];
+  echo "email: " . $_REQUEST["email"];
   die();
 
 }
 
-add_action( 'init', 'my_script_enqueuer' );
+add_action("wp_ajax_get_factura", "get_factura");
+add_action("wp_ajax_nopriv_get_factura", "get_factura");
 
 function my_script_enqueuer() {
    wp_register_script( "facturacion_script", WP_PLUGIN_URL.'/facturacion/facturacion.js', array('jquery') );
@@ -51,3 +53,5 @@ function my_script_enqueuer() {
    wp_enqueue_script( 'facturacion_script' );
 
 }
+
+add_action( 'init', 'my_script_enqueuer' );
