@@ -1,23 +1,46 @@
 <?php
 
-function get_factura() {
+require 'factura-api.php';
+use FacturaApi;
 
-  if($_REQUEST["csrf"] == null){
+class FacturaPlugin {
+	private $api_host   = 'http://localhost/invoiceapi.php';
+	private $api_key    = '785546fsd1325646498dfd8f46ds5f4ds';
+	private $api_secret = '101000111011011';
 
-    $rfc      = $_REQUEST["rfc"];
-    $order_id = $_REQUEST["order"];
-    $email    = $_REQUEST["email"];
+	function __construct() {
 
-    //consultar api metodo de busqueda
+	}
+
+	public function get_invoice($rfc){
+
+		/*
+		//consultar api de factura.com
+
+		*/
+		$factura_api = new FacturaApi($this->api_host, $this->api_key, $this->api_secret);
+		$invoice = $factura_api->get_invoice_api($rfc);
+
+		$invoice_data = array(
+			"class" => "data-warning",
+			"message" => "El RFC no se encuentra registrado. Por favor ingrese sus datos.",
+			"invoice_data" => $invoice
+		);
+
+		return $invoice_data;
+	}
+
+	public function get_order_by_id($order_id) {
+		//consultar pedido en wordpress
+
     $order = wc_get_order( $order_id );
     $order_post = get_post( $order_id );
 
-    if(!$order){
-      echo "Order doesn't exists";
-      die;
+		if(!$order){
+      return false;
     }
 
-    $order_data = array(
+		$order_data = array(
       'id'                        => $order->id,
       'order_number'              => $order->get_order_number(),
       'created_at'                => $order_post->post_date_gmt,
@@ -138,95 +161,15 @@ function get_factura() {
       );
     }
 
-    echo json_encode($order_data, JSON_PRETTY_PRINT);die;
+		return $order_data;
 
-    $invoice = array(
-      "rfc" => $rfc,
-      "order" => array(
-          "num" => $order,
-          "concepts" => array(
-              0 => "producto uno",
-              1 => "producto dos",
-              2 => "producto tres",
-              3 => "producto cuatro",
-          ),
-          "date" => "30/05/2015"
-      ),
-      "customer" => array(
-          "id" => 78545412,
-          "name" => "John Doe",
-          "email" => $email,
-          "shipping" => array(
-              "street" => "Sol",
-              "city" => "Mazatlan",
-              "statue" => "Sinaloa",
-              "country" => "México"
-          )
-      )
-    );
+	}
 
-    $result = array(
-      "error" => array(
-        "code" => 200,
-        "message" => "La operación se ha realizado con éxito"
-      ),
-      "invoice" => $invoice
-    );
+	public function get_customer($field, $value){
+		$user = get_user_by( $field, $value );
+		return $user->data;
+	}
 
-    echo json_encode($result, JSON_PRETTY_PRINT);
 
-  }else{
-    $result['type'] = "error";
-    $result['message'] = "No se puede realizar la operación";
-    echo json_encode($result, JSON_PRETTY_PRINT);
-  }
-
-  /*
-  echo "csrf: " . $_REQUEST["csrf"];
-  echo "RFC: " . $_REQUEST["rfc"];
-  echo "order: " . $_REQUEST["order"];
-  echo "email: " . $_REQUEST["email"];
-  */
-  /*
-  if($invoice === null) {
-      $result['type'] = "error";
-      $result['message'] = "No data received";
-  }
-  else {
-      $result['type'] = "success";
-      $result['message'] = $invoice;
-  }
-
-  if(!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
-      $result = json_encode($result);
-      echo $result;
-  }
-  else {
-     header("Location: ".$_SERVER["HTTP_REFERER"]);
-  }
-  */
-  die();
 
 }
-
-add_action("wp_ajax_get_factura", "get_factura");
-add_action("wp_ajax_nopriv_get_factura", "get_factura");
-
-function my_script_enqueuer() {
-   wp_register_script( "facturacion_script", WP_PLUGIN_URL.'/facturacion/facturacion.js', array('jquery') );
-   wp_localize_script( 'facturacion_script', 'myAjax', array( 'ajaxurl' => admin_url( 'admin-ajax.php' )));
-   wp_enqueue_script( 'jquery' );
-
-   wp_enqueue_script( 'facturacion_script' );
-
-}
-
-add_action( 'init', 'my_script_enqueuer' );
-
-function  facturacion_styles() {
-
-  wp_register_style('facturacion_styles', WP_PLUGIN_URL . '/facturacion/facturacion.css');
-  wp_enqueue_style( 'facturacion_styles' );
-
-}
-add_action( 'wp_print_styles', 'facturacion_styles');
