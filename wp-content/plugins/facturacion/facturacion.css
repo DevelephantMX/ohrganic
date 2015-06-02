@@ -149,6 +149,12 @@
   font-family: 'Open Sans', sans-serif;
   font-size: 14px;
 }
+#f-step-two-form .f-input{
+  border-color: #67BA2F;
+}
+#f-step-two-form .f-input:read-only{
+  border-color: #c2c2c2;
+}
 .step-block .step-content form .f-submit{
   background: #67BA2F;
   border: #67BA2F;
@@ -162,6 +168,15 @@
 .step-block .step-content form .f-submit:hover{
   background: #58A525;
   border: #58A525;
+}
+.step-block .step-content form .f-edit{
+  margin-right: 15px;
+  background: #1992B6;
+  border: #1992B6;
+}
+.step-block .step-content form .f-edit:hover{
+  background: #1683A3;
+  border: #1683A3;
 }
 .step-block .step-content .f-loading{
   font-size: 13px;
@@ -235,7 +250,7 @@
   display: inline-block;
   width: 48%;
   vertical-align: top;
-  margin: 8px auto;
+  margin: 15px auto;
   float: left;
 }
 .f-right{

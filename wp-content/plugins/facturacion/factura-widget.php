@@ -68,24 +68,27 @@ class FacturaWidget {
                       </div>
                     </div>
                     <div class="step-content">
-                      <p class="step-instruction">Verifica los datos fiscales.</p>
+                      <p class="step-instruction"></p>
                       <form name="f-step-two-form" id="f-step-two-form" action="<?php echo get_permalink(); ?>" method="post">
                         <input type="hidden" name="csrf" value="" />
-                        <input type="text" class="f-input" id="fiscal-rfc" name="rfc" value="" placeholder="RFC" />
-                        <input type="text" class="f-input" id="fiscal-nombre" name="nombre" value="" placeholder="Nombre/Razón Social" />
-                        <input type="text" class="f-input f-no-top" id="fiscal-calle" name="calle" value="" placeholder="Calle" />
-                        <input type="text" class="f-input f-right f-no-top" id="fiscal-exterior" name="exterior" value="" placeholder="Num. exterior" />
+                        <input type="text" class="f-input" id="fiscal-rfc" name="rfc" value="" placeholder="RFC" readonly />
+                        <input type="text" class="f-input" id="fiscal-nombre" name="nombre" value="" placeholder="Nombre/Razón Social" readonly />
+                        <input type="text" class="f-input f-no-top" id="fiscal-calle" name="calle" value="" placeholder="Calle" readonly />
+                        <input type="text" class="f-input f-right f-no-top" id="fiscal-exterior" name="exterior" value="" placeholder="Num. exterior" readonly />
                         <div class="clearfix"></div>
-                        <input type="text" class="f-input" id="fiscal-interior" name="interior" value="" placeholder="Num. interior" />
-                        <input type="text" class="f-input f-right" id="fiscal-colonia" name="colonia" value="" placeholder="Colonia" />
+                        <input type="text" class="f-input" id="fiscal-interior" name="interior" value="" placeholder="Num. interior" readonly />
+                        <input type="text" class="f-input f-right" id="fiscal-colonia" name="colonia" value="" placeholder="Colonia" readonly />
                         <div class="clearfix"></div>
-                        <input type="text" class="f-input" id="fiscal-municipio" name="municipio" value="" placeholder="Delegación/municipio" />
-                        <input type="text" class="f-input f-right" id="fiscal-cp" name="cp" value="" placeholder="Código postal" />
+                        <input type="text" class="f-input f-no-top" id="fiscal-municipio" name="municipio" value="" placeholder="Delegación/municipio" readonly />
+                        <input type="text" class="f-input f-right f-no-top" id="fiscal-estado" name="estado" value="" placeholder="Estado" readonly />
                         <div class="clearfix"></div>
-                        <input type="text" class="f-input f-bottom" id="fiscal-estado" name="estado" value="" placeholder="Estado" />
-                        <input type="text" class="f-input f-right f-bottom" id="fiscal-pais" name="pais" value="" placeholder="País" />
+                        <input type="text" class="f-input f-bottom" id="fiscal-pais" name="pais" value="" placeholder="País" readonly />
+                        <input type="text" class="f-input f-right f-bottom" id="fiscal-cp" name="cp" value="" placeholder="Código postal" readonly />
                         <div class="clearfix"></div>
-                        <input type="submit" class="f-submit" id="step-one-button-next" name="f-submit" value="siguiente" />
+                        <input type="submit" class="f-submit" id="step-two-button-next" name="f-submit" value="siguiente" />
+                        <input type="button" class="f-submit f-edit" id="step-two-button-edit" name="f-edit" value="Editar" data-b="1" />
+                        <div class="f-loading">Cargando...</div>
+                        <div id="error_msj">Por favor complete el formulario.</div>
                         <div class="clearfix"></div>
                       </form>
                       <div class="f-loading">Cargando...</div>

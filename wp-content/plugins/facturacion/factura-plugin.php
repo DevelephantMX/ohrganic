@@ -4,7 +4,7 @@ require 'factura-api.php';
 use FacturaApi;
 
 class FacturaPlugin {
-	private $api_host   = 'http://localhost/invoiceapi.php';
+	private $api_host   = 'http://localhost/ohrganic/invoiceapi.php';
 	private $api_key    = '785546fsd1325646498dfd8f46ds5f4ds';
 	private $api_secret = '101000111011011';
 
@@ -16,18 +16,20 @@ class FacturaPlugin {
 
 		/*
 		//consultar api de factura.com
-
 		*/
 		$factura_api = new FacturaApi($this->api_host, $this->api_key, $this->api_secret);
 		$invoice = $factura_api->get_invoice_api($rfc);
 
-		$invoice_data = array(
-			"class" => "data-warning",
-			"message" => "El RFC no se encuentra registrado. Por favor ingrese sus datos.",
-			"invoice_data" => $invoice
-		);
+		return $invoice;
+	}
 
-		return $invoice_data;
+	public function set_invoice($data, $order){
+
+		$factura_api = new FacturaApi($this->api_host, $this->api_key, $this->api_secret);
+		$invoice = $factura_api->set_invoice_api($data, $order);
+
+		return $invoice;
+
 	}
 
 	public function get_order_by_id($order_id) {

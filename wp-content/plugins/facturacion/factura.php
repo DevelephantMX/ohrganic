@@ -15,9 +15,13 @@ define( 'FACTURA__PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 require_once( FACTURA__PLUGIN_DIR . '/factura-widget.php' );
 require_once( FACTURA__PLUGIN_DIR . '/factura-plugin.php' );
 
+//init ajax hooks
+add_action("wp_ajax_get_invoice", "get_invoice");
+add_action("wp_ajax_nopriv_get_invoice", "get_invoice");
+add_action("wp_ajax_display_invoice", "display_invoice");
+add_action("wp_ajax_nopriv_display_invoice", "display_invoice");
+
 //init hooks
-add_action("wp_ajax_get_factura", "get_factura");
-add_action("wp_ajax_nopriv_get_factura", "get_factura");
 add_action( 'init', 'my_script_enqueuer' );
 add_action( 'wp_print_styles', 'facturacion_styles');
 add_shortcode('factura_section', 'form_creation');
@@ -40,8 +44,65 @@ function my_script_enqueuer() {
 }
 
 
+function display_invoice(){
+  if($_REQUEST["csrf"] == null){
 
-function get_factura(){
+    $factura_plugin = new FacturaPlugin();
+
+    if( $_REQUEST["rfc"] == null || $_REQUEST["nombre"] == null
+          || $_REQUEST["calle"] == null || $_REQUEST["exterior"] == null
+          || $_REQUEST["interior"] == null || $_REQUEST["colonia"] == null
+          || $_REQUEST["municipio"] == null || $_REQUEST["estado"] == null
+          || $_REQUEST["pais"] == null || $_REQUEST["cp"] == null ){
+
+      $response = array(
+        "error" => array(
+          "code" =>101,
+          "message" => "No se recibieron algunos datos"
+        ),
+        "invoice" => null
+      );
+      echo json_encode($response, JSON_PRETTY_PRINT);
+      die;
+    }
+
+    $invoice = $factura_plugin->set_invoice($_REQUEST, $_REQUEST["order"]);
+
+    if(!$invoice){
+      $response = array(
+        "error" => array(
+          "code" =>303,
+          "message" => "Ha ocurrido un error. Intentelo de nuevo más tarde."
+        ),
+        "invoice" => null
+      );
+      echo json_encode($response, JSON_PRETTY_PRINT);
+      die;
+    }
+
+    $response = array(
+      "error" => array(
+        "code" => 200,
+        "message" => "La operación se ha realizado con éxito"
+      ),
+      "gen_invoice" => $invoice
+    );
+
+  }else{
+    $response = array(
+      "error" => array(
+        "code" =>100,
+        "message" => "La operación no se ha podido realizar"
+      ),
+      "invoice" => null
+    );
+  }
+
+  echo json_encode($response, JSON_PRETTY_PRINT);
+  die;
+}
+
+function get_invoice(){
 
   if($_REQUEST["csrf"] == null){
 
