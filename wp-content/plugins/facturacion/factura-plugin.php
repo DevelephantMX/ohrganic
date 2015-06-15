@@ -4,32 +4,45 @@ require 'factura-api.php';
 use FacturaApi;
 
 class FacturaPlugin {
-	private $api_host   = 'http://localhost/ohrganic/invoiceapi.php';
-	private $api_key    = '785546fsd1325646498dfd8f46ds5f4ds';
-	private $api_secret = '101000111011011';
+
+	private $api_host   = 'https://factura.com/api/v1/';
+	private $api_key    = 'JDJ5JDEwJG5QWWcyd0hWNExDMXByc1ltQjVEeU9QdGFxSmZ0Ni5vWFA2RXdsVDVLdml3QWF3TEs1aHA2';
+	private $api_secret = 'JDJ5JDEwJGgvL2xoNnlnMkRHYkRyblpleVBjZ2VVcmZITW9VQm40VHNXSGdZTlJmU3E2QjRmVFRqbVl1';
 
 	function __construct() {
 
 	}
 
 	public function get_invoice($rfc){
-
-		/*
-		//consultar api de factura.com
-		*/
-		$factura_api = new FacturaApi($this->api_host, $this->api_key, $this->api_secret);
+		$url = $this->api_host . "clients/";
+		$factura_api = new FacturaApi($url, $this->api_key, $this->api_secret);
 		$invoice = $factura_api->get_invoice_api($rfc);
 
 		return $invoice;
 	}
 
-	public function set_invoice($data, $order){
+	public function generate_invoice($customer, $order){
+		$url = $this->api_host . "invoice/create";
 
-		$factura_api = new FacturaApi($this->api_host, $this->api_key, $this->api_secret);
-		$invoice = $factura_api->set_invoice_api($data, $order);
+		$factura_api = new FacturaApi($url, $this->api_key, $this->api_secret);
+		$response = $factura_api->generate_invoice($customer, $order);
+
+		return $response;
+
+	}
+
+	public function create_client($data, $order){
+
+		if($data["api_method"] == "create"){
+			$url = $this->api_host . "clients/create";
+		}else{
+			$url = $this->api_host . "clients/".$data["uid"]."/update";
+		}
+
+		$factura_api = new FacturaApi($url, $this->api_key, $this->api_secret);
+		$invoice = $factura_api->create_client_api($data, $order);
 
 		return $invoice;
-
 	}
 
 	public function get_order_by_id($order_id) {

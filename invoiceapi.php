@@ -1,8 +1,7 @@
 <?php
 
 $data = array(
-  "success" => false,
-  /*
+  "success" => true,
   "customer" => array(
     "rfc" => "SOOP900901770",
     "razon_nombre" => "Paul Alejandro Soberanes Osuna",
@@ -22,7 +21,6 @@ $data = array(
     "iva" => 345.00,
     "total" => 11245.00
   )
-  */
 );
 
 echo json_encode($data);
