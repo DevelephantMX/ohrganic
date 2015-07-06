@@ -9,9 +9,9 @@ class FacturaWidget {
             <div id="content" class="site-content" role="main">
               <div class="home_product">
                 <div class="f-welcome-container">
-                  <h1 class="f-page-title">¡Bienvenido al servicio de Factura Electrónica!</h1>
+                  <h1 class="f-page-title">¡BIENVENIDO AL SERVICIO DE FACTURACI&Oacute;N ELECTR&Oacute;NICA! </h1>
                   <p class="f-page-subtitle">
-                    Aqu&iacute; podr&aacute;s generar las facturas de tus compras realizadas en <span class="brand">Drone Shop</span>
+                    Aqu&iacute; puedes generar las facturas de tus compras realizadas en <span class="brand">Drone Shop</span>
                   </p>
                   <div class="f-button-container">
                     <button type="button" name="fstart" id="f-start">Obtener factura</button>
@@ -24,30 +24,29 @@ class FacturaWidget {
                     <div class="step-header">
                       <h1>
                         <span>Paso 1</span>
-                        Buscar factura
+                        Identificar pedido
                       </h1>
-                      <div class="steps-icons">
-                        <div id="progress" value="100" max="100"></div>
-                        <ul class="step-badges">
-                          <li><i class="fa fa-search"></i></li>
-                          <li><i class="fa fa-info"></i></li>
-                          <li><i class="fa fa-file-text-o"></i></li>
-                          <li><i class="fa fa-arrow-circle-o-down"></i></li>
-                        </ul>
-                      </div>
                     </div>
                     <div class="step-content">
-                      <p class="step-instruction">Ingresa tu RFC, num. de &oacute;rden y/o correo electr&oacute;nico para buscar tu pedido. </p>
+                      <p class="step-instruction">Ingresa tu RFC, n&uacute;m. de pedido y/o correo electr&oacute;nico para buscar tu pedido. </p>
                       <form name="f-step-one-form" id="f-step-one-form" action="<?php echo get_permalink(); ?>" method="post">
                         <input type="hidden" name="csrf" value="" />
-                        <input type="text" class="input-upper f-input" id="f-rfc" name="rfc" value="" placeholder="RFC" />
-                        <input type="text" class="f-input" id="f-num-order" name="order" value="" placeholder="# de órden *"  />
-                        <input type="email" class="f-input" id="f-email" name="email" value="" placeholder="Correo electrónico *"  />
-                        <input type="submit" class="f-submit" id="step-one-button-next" name="f-submit" value="siguiente" />
-                        <div class="f-loading">Cargando...</div>
+                        <label for="f-rfc" >RFC</label>
+                        <input type="text" class="input-upper f-input" id="f-rfc" name="rfc" value="" placeholder="12 o 13 dígitos" />
+                        <label for="f-num-order" >N&uacute;m de pedido*</label>
+                        <input type="text" class="f-input" id="f-num-order" name="order" value="" placeholder="#"  />
+                        <label for="f-email" >Correo electr&oacute;nico*</label>
+                        <input type="email" class="f-input" id="f-email" name="email" value="" placeholder="El correo registrado en el pedido"  />
+                        <!-- <p class="email-msg">*El correo electr&oacute;nico debe ser el registrado en la &oacute;rden.</p> -->
+                        <div class="buttons-right">
+                          <input type="submit" class="f-submit" id="step-one-button-next" name="f-submit" value="siguiente" />
+                        </div>
                         <div id="error_msj">Por favor complete el formulario.</div>
                         <div class="clearfix"></div>
                       </form>
+                    </div>
+                    <div class="loader_content">
+                      <div class="loader">Cargando...</div>
                     </div>
                   </div>
 
@@ -55,17 +54,8 @@ class FacturaWidget {
                     <div class="step-header">
                       <h1>
                         <span>Paso 2</span>
-                        Comprobar informaci&oacute;n
+                        Informaci&oacute;n del cliente
                       </h1>
-                      <div class="steps-icons">
-                        <div id="progress" value="100" max="100"></div>
-                        <ul class="step-badges">
-                          <li><i class="fa fa-search"></i></li>
-                          <li><i class="fa fa-info"></i></li>
-                          <li><i class="fa fa-file-text-o"></i></li>
-                          <li><i class="fa fa-arrow-circle-o-down"></i></li>
-                        </ul>
-                      </div>
                     </div>
                     <div class="step-content">
                       <p class="step-instruction"></p>
@@ -73,36 +63,83 @@ class FacturaWidget {
                         <input type="hidden" name="csrf" value="" />
                         <input type="hidden" id="apimethod" name="apimethod" value="create" />
                         <input type="hidden" id="uid" name="uid" value="" />
-                        <h3>Datos generales</h3>
-                        <input type="text" class="input-cap f-input f-top" id="general-nombre" name="general-nombre" value="" placeholder="Nombre" readonly />
-                        <input type="text" class="input-cap f-input f-top" id="general-apellidos" name="general-apellidos" value="" placeholder="Apellidos" readonly />
-                        <input type="email" class="f-input f-top" id="general-email" name="general-email" value="" placeholder="Email para envío de CFDI" readonly />
-                        <hr>
+                        <h3>Datos de contacto</h3>
+                        <div class="input-group">
+                          <label for="general-nombre">Nombre</label>
+                          <input type="text" class="input-cap f-input f-top" id="general-nombre" name="general-nombre" value="" placeholder="" readonly />
+                        </div>
+                        <div class="input-group">
+                          <label for="general-apellidos">Apellidos</label>
+                          <input type="text" class="input-cap f-input f-top" id="general-apellidos" name="general-apellidos" value="" placeholder="" readonly />
+                        </div>
+                        <div class="input-group">
+                          <label for="general-email">Correo electr&oacute;nico</label>
+                          <input type="email" class="f-input f-top" id="general-email" name="general-email" value="" placeholder="Email para envío de CFDI" readonly />
+                        </div>
                         <h3>Datos fiscales</h3>
-                        <input type="text" class="input-cap f-input f-top" id="fiscal-nombre" name="fiscal-nombre" value="" placeholder="Nombre/Razón Social" readonly />
-                        <input type="text" class="input-upper f-input f-top" id="fiscal-rfc" name="fiscal-rfc" value="" placeholder="RFC" readonly />
-                        <input type="text" class="input-cap f-input f-no-top" id="fiscal-calle" name="fiscal-calle" value="" placeholder="Calle" readonly />
-                        <input type="text" class="input-cap f-input f-right f-no-top" id="fiscal-exterior" name="fiscal-exterior" value="" placeholder="Num. exterior" readonly />
+                        <div class="input-group">
+                          <label for="fiscal-nombre">Nombre/Razón Social</label>
+                          <input type="text" class="input-cap f-input f-top" id="fiscal-nombre" name="fiscal-nombre" value="" placeholder="" readonly />
+                        </div>
+                        <div class="input-group">
+                          <label for="fiscal-rfc">RFC</label>
+                          <input type="text" class="input-upper f-input f-top" id="fiscal-rfc" name="fiscal-rfc" value="" placeholder="12 o 13 dígitos" readonly />
+                        </div>
+                        <div class="input-group">
+                          <label for="fiscal-calle">Calle</label>
+                          <input type="text" class="input-cap f-input f-no-top" id="fiscal-calle" name="fiscal-calle" value="" placeholder="" readonly />
+                        </div>
+                        <div class="input-group float-left">
+                          <label for="fiscal-exterior">Núm. exterior</label>
+                          <input type="text" class="input-cap f-input f-right f-no-top" id="fiscal-exterior" name="fiscal-exterior" value="" placeholder="" readonly />
+                        </div>
+                        <div class="input-group float-left" style="margin-left: 9px;">
+                          <label for="fiscal-interior">Núm. interior</label>
+                          <input type="text" class="input-cap f-input" id="fiscal-interior" name="fiscal-interior" value="" placeholder="" readonly />
+                        </div>
+                        <div class="input-group">
+                          <label for="fiscal-colonia">Colonia</label>
+                          <input type="text" class="input-cap f-input f-right" id="fiscal-colonia" name="fiscal-colonia" value="" placeholder="" readonly />
+                        </div>
+                        <!--
+                        <div class="input-group">
+                          <label for="fiscal-delegacion">Delegaci&oacute;n</label>
+                          <input type="text" class="input-cap f-input f-no-top" id="fiscal-delegacion" name="fiscal-delegacion" value="" placeholder="" readonly />
+                        </div>
+                        -->
+                        <div class="input-group">
+                          <label for="fiscal-municipio">Delegaci&oacute;n/Ciudad</label>
+                          <input type="text" class="input-cap f-input f-no-top f-right" id="fiscal-municipio" name="fiscal-municipio" value="" placeholder="" readonly />
+                        </div>
+                        <div class="input-group">
+                          <label for="fiscal-estado">Estado</label>
+                          <input type="text" class="input-cap f-input" id="fiscal-estado" name="fiscal-estado" value="" placeholder="" readonly />
+                        </div>
+                        <div class="input-group">
+                          <label for="fiscal-pais">Pa&iacute;s</label>
+                          <input type="text" class="input-cap f-input f-right" id="fiscal-pais" name="fiscal-pais" value="México" placeholder="" readonly />
+                        </div>
+                        <div class="input-group">
+                          <label for="fiscal-cp">C&oacute;digo postal</label>
+                          <input type="text" class="input-cap f-input f-no-top f-bottom" id="fiscal-cp" name="fiscal-cp" value="" placeholder="" readonly />
+                        </div>
+                        <div class="input-group">
+                          <label for="fiscal-telefono">Tel&eacute;fono</label>
+                          <input type="text" class="input-cap f-input f-no-top f-right f-bottom" id="fiscal-telefono" name="fiscal-telefono" value="" placeholder="10 digitos" readonly />
+                        </div>
                         <div class="clearfix"></div>
-                        <input type="text" class="input-cap f-input" id="fiscal-interior" name="fiscal-interior" value="" placeholder="Num. interior" readonly />
-                        <input type="text" class="input-cap f-input f-right" id="fiscal-colonia" name="fiscal-colonia" value="" placeholder="Colonia" readonly />
-                        <div class="clearfix"></div>
-                        <input type="text" class="input-cap f-input f-no-top" id="fiscal-delegacion" name="fiscal-delegacion" value="" placeholder="Delegación" readonly />
-                        <input type="text" class="input-cap f-input f-no-top f-right" id="fiscal-municipio" name="fiscal-municipio" value="" placeholder="Ciudad" readonly />
-                        <div class="clearfix"></div>
-                        <input type="text" class="input-cap f-input" id="fiscal-estado" name="fiscal-estado" value="" placeholder="Estado" readonly />
-                        <input type="text" class="input-cap f-input f-right" id="fiscal-pais" name="fiscal-pais" value="México" placeholder="País" readonly />
-                        <div class="clearfix"></div>
-                        <input type="text" class="input-cap f-input f-no-top f-bottom" id="fiscal-cp" name="fiscal-cp" value="" placeholder="Código postal" readonly />
-                        <input type="text" class="input-cap f-input f-no-top f-right f-bottom" id="fiscal-telefono" name="fiscal-telefono" value="" placeholder="Teléfono" readonly />
-                        <div class="clearfix"></div>
-                        <input type="submit" class="f-submit" id="step-two-button-next" name="f-submit" value="siguiente" />
-                        <input type="button" class="f-submit f-edit" id="step-two-button-edit" name="f-edit" value="Editar" data-b="1" />
+                        <div class="buttons-right">
+                          <input type="button" class="f-submit f-back" id="step-two-button-back" name="f-back" value="Volver" data-f="2" />
+                          <input type="button" class="f-submit f-edit" id="step-two-button-edit" name="f-edit" value="Editar" data-b="1" />
+                          <input type="submit" class="f-submit" id="step-two-button-next" name="f-submit" value="siguiente" />
+                        </div>
                         <div class="f-loading">Cargando...</div>
                         <div id="error_msj">Por favor complete el formulario.</div>
                         <div class="clearfix"></div>
                       </form>
-                      <div class="f-loading">Cargando...</div>
+                    </div>
+                    <div class="loader_content">
+                      <div class="loader">Cargando...</div>
                     </div>
                   </div>
 
@@ -110,7 +147,7 @@ class FacturaWidget {
                     <div class="step-header">
                       <h1>
                         <span>Paso 3</span>
-                        Verificar factura
+                        Verificar datos de pedido
                       </h1>
                       <div class="steps-icons">
                         <div id="progress" value="100" max="100"></div>
@@ -147,7 +184,7 @@ class FacturaWidget {
                         </div>
 
                       <div class="invoice-details">
-                        <h3 class="invoice-header">Detalle a facturar</h3>
+                        <h3 class="invoice-header">Detalle del pedido</h3>
                         <table id="table-details">
                           <thead>
                             <tr>
@@ -165,7 +202,28 @@ class FacturaWidget {
 
                       <div class="invoice-payment">
                         <h3 class="invoice-header">M&eacute;todo de pago</h3>
-                        <p id="invoice-pmethod"></p>
+                        <p id="invoice-pmethod">
+                          Selecciona el m&eacute;todo de pago
+                          <form id="payment-method-form">
+                            <div class="input-group">
+                              <label for="select-payment">M&eacute;todo</label>
+                              <select id="select-payment" class="input-cap f-input f-select">
+                                <option value="0">Selecciona una opción</option>
+                                <option value="1">PayPal</option>
+                                <option value="2">Depósito en Cuenta</option>
+                                <option value="3">Efectivo</option>
+                                <option value="4">Pago con Tarjeta</option>
+                                <option value="5">Transferencia Electrónica</option>
+                              </select>
+                            </div>
+                            <div class="clearfix"></div>
+                            <div id="num-cta-box" class="input-group">
+                              <label for="f-num-cta" style="width: 285px;">&Uacute;ltimos 4 dígitos de tu cuenta o tarjeta</label>
+                              <input type="text" class="input-cap f-input f-no-top f-bottom f-digits" id="f-num-cta" name="f-num-cta" value="" placeholder="####" />
+                            </div>
+                            <div class="clearfix"></div>
+                          </form>
+                        </p>
                       </div>
 
                       <div class="invoice-totals">
@@ -185,16 +243,22 @@ class FacturaWidget {
                         </table>
                       </div>
                         <div class="clearfix"></div>
-                        <input type="button" class="btn-success" style="background: #67BA2F !important;border: #67BA2F !important;padding: 13px 20px;" id="step-three-button-next" name="f-submit" value="Generar factura" />
+                        <div class="buttons-right">
+                          <input type="button" class="f-submit f-back" id="step-three-button-back" name="f-back" value="Volver" data-f="3" />
+                          <input type="button" class="btn-success" style="background: #67BA2F !important;border: #67BA2F !important;padding: 13px 20px;margin: 0;margin-left: 15px;font-weight: bold;" id="step-three-button-next" name="f-submit" value="Generar factura" />
+                        </div>
                         <div class="clearfix"></div>
                       </div>
+                    </div>
+                    <div class="loader_content">
+                      <div class="loader">Cargando...</div>
                     </div>
                   </div>
                   <div id="step-four" class="step-block step-invoice">
                     <div class="step-header">
                       <h1>
                         <span></span>
-                        La factura ha sido creada
+                        Resultado de facturaci&oacute;n
                       </h1>
                       <div class="steps-icons">
                         <div id="progress" value="100" max="100"></div>
@@ -210,15 +274,24 @@ class FacturaWidget {
                       <div class="buttons_container">
                         <h1 id="result-msg-title">La factura ha sido creada y enviada con &eacute;xito.</h1>
                         <div class="clearfix"></div>
+                        <h4 id="result-email-msg"></h4>
                         <h4 id="result-msg"></h4>
-                        <a href="#" id="btn-success-pdf" class="btn-success invoice-button invoice-pdf">Descargar PDF</a>
-                        <a href="#" id="btn-success-xml" class="btn-success invoice-button invoice-xml">Descargar XML</a>
+                        <a href="#" id="btn-success-email" class="btn-success invoice-button invoice-pdf" target="_blank">Enviar por correo electr&oacute;nico</a>
+                        <a href="#" id="btn-success-pdf" class="btn-success invoice-button invoice-pdf" target="_blank">Descargar PDF</a>
+                        <a href="#" id="btn-success-xml" class="btn-success invoice-button invoice-xml" target="_blank">Descargar XML</a>
+                      </div>
+                      <div id="out-message">
+                        <h3>Ya puedes cerrar &eacute;sta p&aacute;gina o <a href="http://droneshop.mx">seguir navegando</a>.</h3>
                       </div>
                     </div>
                   </div>
-
+                  <div id="out-message">
+                    <h3>Si necesitas facturar pedidos anteriores al <strong>23 de Junio</strong>,
+                        por favor env&iacute;a un correo a
+                        <a href="mailto:facturacion@droneshop.mx">facturacion@droneshop.mx</a>.
+                    </h3>
+                  </div>
                 </div>
-
               </div>
             <!-- #homepage -->
             </div>

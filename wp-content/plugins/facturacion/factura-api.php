@@ -12,6 +12,11 @@ class FacturaApi {
     $this->secret = $secret;
 	}
 
+  public function send_invoice(){
+    $sent = $this->callCurl($this->url, 'GET');
+    return $sent;
+  }
+
   public function get_invoice_api($rfc){
 
     $api_url = $this->url . $rfc;
@@ -50,7 +55,7 @@ class FacturaApi {
       "colonia"         => $data["f_colonia"],
       "estado"          => $data["f_estado"],
       "ciudad"          => $data["f_municipio"],
-      "delegacion"      => $data["f_delegacion"],
+      "delegacion"      => $data["f_municipio"],
       "save"            => true,
     );
 
@@ -58,7 +63,7 @@ class FacturaApi {
     return $response;
   }
 
-  public function generate_invoice($customer, $order){
+  public function generate_invoice($customer, $order, $payment_data){
 
     $items = array();
     foreach($order["line_items"] as $item){
@@ -68,23 +73,30 @@ class FacturaApi {
         "cantidad"  => $item["quantity"],
         "unidad"    => $unidad,
         "concept"   => $item["name"],
-        "precio"    => $item["price"],
+        "precio"    => $item["price"] / 1.16,
         "subtotal"  => $item["subtotal"],
       );
 
       array_push($items, $product);
     }
 
-    $payment_method = ($order["payment_details"]["method_id"] == "bacs") ? "Depósito en Cuenta" : "Pago con Tarjeta";
+    //payment method
+    if($payment_data["method"] == 1 || $payment_data["method"] == 2 || $payment_data["method"] == 3){
+      $payment_method = "No Identificado";
+      $numero_cuenta  = "No identificado";
+    }else{
+      $payment_method = $payment_data["method_text"];
+      $numero_cuenta  = $payment_data["account"];
+    }
 
     $params = array(
       "rfc"           => $customer["RFC"],
       "items"         => $items,
-      "numerocuenta"  => "No identificado",
+      "numerocuenta"  => $numero_cuenta,
       "formapago"     => "Pago en una Sola Exhibición",
       "metodopago"    => $payment_method,
       "currencie"     => $order["currency"],
-      "iva"           => "TRUE",
+      "iva"           => 1,
       "num_order"     => $order["id"],
       "seriefactura"  => "F",
       "save"          => "true"

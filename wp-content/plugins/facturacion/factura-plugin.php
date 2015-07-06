@@ -21,14 +21,22 @@ class FacturaPlugin {
 		return $invoice;
 	}
 
-	public function generate_invoice($customer, $order){
+	public function generate_invoice($customer, $order, $payment_data){
 		$url = $this->api_host . "invoice/create";
 
 		$factura_api = new FacturaApi($url, $this->api_key, $this->api_secret);
-		$response = $factura_api->generate_invoice($customer, $order);
+		$response = $factura_api->generate_invoice($customer, $order, $payment_data);
 
 		return $response;
 
+	}
+
+	public function send_invoice($invoice_uid){
+		$url = $this->api_host . "invoice/".$invoice_uid."/email";
+
+		$factura_api = new FacturaApi($url, $this->api_key, $this->api_secret);
+		$response = $factura_api->send_invoice();
+		return $response;
 	}
 
 	public function create_client($data, $order){
@@ -134,12 +142,17 @@ class FacturaPlugin {
 
     // add shipping
     foreach ( $order->get_shipping_methods() as $shipping_item_id => $shipping_item ) {
-
-      $order_data['shipping_lines'][] = array(
+      $order_data['line_items'][] = array(
         'id'           => $shipping_item_id,
-        'method_id'    => $shipping_item['method_id'],
-        'method_title' => $shipping_item['name'],
+		'subtotal'	   => wc_format_decimal( $shipping_item['cost'], 2 ),
         'total'        => wc_format_decimal( $shipping_item['cost'], 2 ),
+        'total_tax'    => wc_format_decimal( $shipping_item['cost'], 2 ),
+        'price'        => wc_format_decimal( $shipping_item['cost'], 2 ),
+        'quantity'     => 1,
+        'tax_class'    => $shipping_item['method_id'],
+        'name' 		   => $shipping_item['name'],
+        'product_id'   => $shipping_item['method_id'],
+		'sku'		   => 'N/A'
       );
     }
 

@@ -23,6 +23,8 @@ add_action("wp_ajax_create_client", "create_client");
 add_action("wp_ajax_nopriv_create_client", "create_client");
 add_action("wp_ajax_generate_invoice", "generate_invoice");
 add_action("wp_ajax_nopriv_generate_invoice", "generate_invoice");
+add_action("wp_ajax_send_invoice", "send_invoice");
+add_action("wp_ajax_nopriv_send_invoice", "send_invoice");
 
 //init hooks
 add_action( 'init', 'my_script_enqueuer' );
@@ -62,17 +64,35 @@ function my_script_enqueuer() {
 function generate_invoice(){
   $factura_plugin = new FacturaPlugin();
 
-  if($_REQUEST["customer_data"] == null || $_REQUEST["order_data"] == null){
+  if($_REQUEST["customer_data"] == null || $_REQUEST["order_data"] == null || $_REQUEST["payment_m"] == null){
     $response = array(
       "code" =>101,
-      "message" => "No se recibieron algunos datos",
+      "message" => "No se recibieron algunos datos.",
       "invoice" => null
     );
     echo json_encode($response, JSON_PRETTY_PRINT);
     die;
   }
 
-  $api_response = $factura_plugin->generate_invoice($_REQUEST["customer_data"], $_REQUEST["order_data"]);
+  if($_REQUEST["payment_m"] == 4 || $_REQUEST["payment_m"] == 5){
+    if($_REQUEST["num_cta_m"] == ""){
+      $response = array(
+        "code" =>101,
+        "message" => "Si selecciona Pago con tarjeta o Transferencia electrónica, necesita especificar los últimos 4 dígitos de su cuenta o tarjeta.",
+        "invoice" => null
+      );
+      echo json_encode($response, JSON_PRETTY_PRINT);
+      die;
+    }
+  }
+
+  $payment_data = array(
+    "method"      => $_REQUEST["payment_m"],
+    "method_text" => $_REQUEST["payment_t"],
+    "account"     => $_REQUEST["num_cta_m"]
+  );
+
+  $api_response = $factura_plugin->generate_invoice($_REQUEST["customer_data"], $_REQUEST["order_data"], $payment_data);
 
   $response = array(
     "invoice" => $api_response
@@ -119,6 +139,25 @@ function create_client(){
       "invoice" => null
     );
   }
+
+  echo json_encode($response, JSON_PRETTY_PRINT);
+  die;
+}
+
+function send_invoice(){
+
+  if($_REQUEST["invoice"] != null){
+    $factura_plugin = new FacturaPlugin();
+
+    $response = $factura_plugin->send_invoice($_REQUEST["invoice"]);
+
+  }else{
+    $response = array(
+      "status" => "error",
+      "message" => "No se recibió el ID de la factura."
+    );
+  }
+
 
   echo json_encode($response, JSON_PRETTY_PRINT);
   die;
@@ -173,9 +212,25 @@ function get_invoice(){
       die;
     }
 
+    //validar pedidos a partir del 23 de julio
+    $date_limit = 1435017600; //23 de junio
+    $order_time = strtotime($order["completed_at"]);
+
+    if($order_time < $date_limit) {
+      $response = array(
+        "error" => array(
+          "code" =>106,
+          "message" => "Sólo se pueden facturar pedidos realizados a partir del 23 de Junio de 2015."
+        ),
+        "invoice" => null
+      );
+      echo json_encode($response, JSON_PRETTY_PRINT);
+      die;
+    }
+
     //validar que el email coincida
-    $customer = $factura_plugin->get_customer('id', $order["customer_id"]);
-    if($email != $customer->user_email){
+    $customer_email = $order["billing_address"]["email"]; // $factura_plugin->get_customer('id', $order["customer_id"]);
+    if($email != $customer_email){
       $response = array(
         "error" => array(
           "code" =>103,

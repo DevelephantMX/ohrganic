@@ -1,6 +1,6 @@
 * Hostname was found in DNS cache
 *   Trying 174.136.25.67...
-* Connected to factura.com (174.136.25.67) port 443 (#5)
+* Connected to factura.com (174.136.25.67) port 443 (#9)
 * successfully set certificate verify locations:
 *   CAfile: none
   CApath: /etc/ssl/certs
@@ -12,24 +12,24 @@
 * 	 subjectAltName: factura.com matched
 * 	 issuer: C=US; O=Thawte, Inc.; OU=Domain Validated SSL; CN=Thawte DV SSL CA
 * 	 SSL certificate verify ok.
-> POST /api/v1/invoice/create HTTP/1.1
+> POST /api/v1/clients/create HTTP/1.1
 Host: factura.com
 Accept: */*
 Content-Type: application/json
-Content-Length:433
+Content-Length:364
 F-API-KEY:JDJ5JDEwJG5QWWcyd0hWNExDMXByc1ltQjVEeU9QdGFxSmZ0Ni5vWFA2RXdsVDVLdml3QWF3TEs1aHA2
 F-SECRET-KEY:JDJ5JDEwJGgvL2xoNnlnMkRHYkRyblpleVBjZ2VVcmZITW9VQm40VHNXSGdZTlJmU3E2QjRmVFRqbVl1
 
-* upload completely sent off: 433 out of 433 bytes
+* upload completely sent off: 364 out of 364 bytes
 < HTTP/1.1 200 OK
-< Date: Mon, 15 Jun 2015 23:20:35 GMT
+< Date: Mon, 22 Jun 2015 17:45:15 GMT
 * Server Apache/2 is not blacklisted
 < Server: Apache/2
 < X-Powered-By: PHP/5.4.31
 < Cache-Control: no-cache
-< Set-Cookie: laravel_session=eyJpdiI6Ilwvd1l1dUt4S0VrbVd1VmRaRit3TW9nPT0iLCJ2YWx1ZSI6IjdFXC9PSmg5ZFlndHRkXC9xMkl2Wm4rUmoxeTErQXB2YzA2VVNIWlwvZU5cL3hBUFlYVkNDWUc1WURLVjJ1a2Jpa0NLOTF2VkhCUlRYUW9zOVYxUjM2eFEwQT09IiwibWFjIjoiMDBhYzdjZGQ2YjRkYjNiNjBhMGIxMzg2ODQwNjRjNzllNzNjZGVkZmYzMTFiYjdmODFkMDM0ODFmZDNhMGY3OCJ9; expires=Tue, 16-Jun-2015 01:20:35 GMT; path=/; httponly
+< Set-Cookie: laravel_session=eyJpdiI6IlpjQUJcL3JFNzNpUXlZQlk0ZHRVRU1BPT0iLCJ2YWx1ZSI6ImtOb1M3bytYKzYzSWYyR1NiNXF2T2RVbHdlOTJlbldZQnAxUzRQZVpLXC9yXC9PZXJZd3JqcnhReHgzN1dWZ0JidmNtSVQ2RWl3SmltVjBUOG1sVGVMN2c9PSIsIm1hYyI6IjY4OTVhYzE1YzEzMzk1NTU0M2Y4NjczMzRmY2U4M2YyODYxNjM0NmU0MGRlN2JlYjI1MTY3MjhlMWM5ZThiNjUifQ%3D%3D; expires=Mon, 22-Jun-2015 19:45:15 GMT; path=/; httponly
 < Vary: Accept-Encoding
-< Content-Length: 78
+< Content-Length: 409
 < Content-Type: application/json
 < 
-* Connection #5 to host factura.com left intact
+* Connection #9 to host factura.com left intact

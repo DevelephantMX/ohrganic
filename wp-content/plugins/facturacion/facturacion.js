@@ -4,6 +4,17 @@ jQuery(document).ready( function($) {
     return this.replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });
   };
 
+  Number.prototype.formatMoney = function(c, d, t){
+  var n = this,
+    c = isNaN(c = Math.abs(c)) ? 2 : c,
+    d = d == undefined ? "." : d,
+    t = t == undefined ? "," : t,
+    s = n < 0 ? "-" : "",
+    i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "",
+    j = (j = i.length) > 3 ? j % 3 : 0;
+    return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+  };
+
   $(".input-cap").on('input', function(evt) {
     var input = $(this);
   	var start = input[0].selectionStart;
@@ -23,7 +34,6 @@ jQuery(document).ready( function($) {
     input[0].selectionStart = input[0].selectionEnd = start;
   });
 
-
   var order_data, customer_data, invoice_data;
 
   $('#f-start').click(function(){
@@ -39,7 +49,7 @@ jQuery(document).ready( function($) {
         return false;
       }
 
-      $("#step-two .f-loading").show();
+      $("#step-one .loader_content").show();
 
       form_data = $(this).serializeArray();
 
@@ -52,9 +62,10 @@ jQuery(document).ready( function($) {
       }
 
       $.post(myAjax.ajaxurl, data, function(response) {
-        $("#step-two .f-loading").hide();
+        console.log(response);
+        $("#step-one .loader_content").hide();
 
-        if(response.error.code == 104){
+        if(response.invoice == null){
           alert(response.error.message);
           return false;
         }
@@ -87,7 +98,10 @@ jQuery(document).ready( function($) {
     $('#f-step-two-form').submit(function(e){
       e.preventDefault();
 
+      $("#step-two .loader_content").show();
+
       if( !validateForm($(this), 2) ) {
+        $("#step-two .loader_content").hide();
         return false;
       }
 
@@ -107,17 +121,16 @@ jQuery(document).ready( function($) {
         f_exterior    : form_data[9].value,
         f_interior    : form_data[10].value,
         f_colonia     : form_data[11].value,
-        f_delegacion  : form_data[12].value,
-        f_municipio   : form_data[13].value,
-        f_estado      : form_data[14].value,
-        f_pais        : form_data[15].value,
-        f_cp          : form_data[16].value,
-        f_telefono    : form_data[17].value,
+        f_municipio   : form_data[12].value,
+        f_estado      : form_data[13].value,
+        f_pais        : form_data[14].value,
+        f_cp          : form_data[15].value,
+        f_telefono    : form_data[16].value,
       }
 
       $.post(myAjax.ajaxurl, data, function(response) {
 
-        $("#step-two .f-loading").hide();
+        $("#step-two .loader_content").hide();
         var invoice_data = response.invoice;
 
         if( invoice_data.status == "error" ){
@@ -133,28 +146,97 @@ jQuery(document).ready( function($) {
     //STEP THREE
     $('#step-three-button-next').click(function(e){
       e.preventDefault();
+      $("#step-three .loader_content").show();
+
+      var selected_method = $( "#select-payment option:selected" ).val();
+      var selected_method_text = $( "#select-payment option:selected" ).text();
+      var num_cta_method  = $( "#f-num-cta" ).val();
+
+      if(selected_method == 0){
+        $("#step-three .loader_content").hide();
+        alert('Por favor selecciona un método de pago.');
+        return false;
+      }
+
+      if(selected_method == 4 || selected_method == 5){
+        if(num_cta_method == ""){
+          $("#step-three .loader_content").hide();
+          alert('Por favor ingresa los últimos 4 dígitos de tu cuenta o tarjeta.');
+          return false;
+        }
+      }
 
       data = {
         action        : 'generate_invoice',
         customer_data : customer_data,
-        order_data    : order_data
+        order_data    : order_data,
+        payment_m     : selected_method,
+        payment_t     : selected_method_text,
+        num_cta_m     : num_cta_method
       }
 
       $.post(myAjax.ajaxurl, data, function(response){
-
         $("#step-three").stop().hide();
+        $("#step-three .loader_content").hide();
 
         if(response.invoice.status == "success"){
 
-          $('#btn-success-pdf').stop().show().attr('href','https://factura.com/api/v1/invoice/'+response.invoice.invoice_uid+'/pdf');
-          $('#btn-success-xml').stop().show().attr('href','https://factura.com/api/v1/invoice/'+response.invoice.invoice_uid+'/xml4');
+          $('#btn-success-email').stop().show().attr('data-invoice', response.invoice.invoice_uid);
+          $('#btn-success-pdf').stop().show().attr('href','https://factura.com/api/publica/invoice/'+response.invoice.invoice_uid+'/pdf');
+          $('#btn-success-xml').stop().show().attr('href','https://factura.com/api/publica/invoice/'+response.invoice.invoice_uid+'/xml');
         }else{
-          $("#result-msg-title").text("Ha ocurrido un error. Por favor inténtelo de nuevo.");
-          $("#result-msg").html(response.invoice.message);
+
+          $("#result-msg-title").text(response.invoice.message);
+          //$("#result-msg").html(response.invoice.message);
+
+          $('#btn-success-email').stop().show().attr('data-invoice', response.invoice.invoice_uid);
+          $('#btn-success-pdf').stop().show().attr('href','https://factura.com/api/publica/invoice/'+response.invoice.invoice_uid+'/pdf');
+          $('#btn-success-xml').stop().show().attr('href','https://factura.com/api/publica/invoice/'+response.invoice.invoice_uid+'/xml');
         }
 
         $("#step-four").stop().fadeIn("slow");
       }, 'json');
+
+    });
+
+    $("#select-payment").change(function(){
+      var selected_method = $( "#select-payment option:selected" ).val();
+
+      if(selected_method == 4 || selected_method == 5){
+        $("#num-cta-box").fadeIn('fast');
+      }else{
+        $("#num-cta-box").fadeOut('fast');
+      }
+
+
+
+    });
+
+
+    $('#btn-success-email').click(function(e){
+      e.preventDefault();
+
+      $('#result-email-msg').html('Enviando factura por correo electrónico...');
+
+      var uid = $(this).attr('data-invoice');
+
+      data = {
+        action  : 'send_invoice',
+        invoice : uid,
+      }
+
+      $.post(myAjax.ajaxurl, data, function(response){
+        $('#result-email-msg').addClass(response.status).html(response.message);
+      }, 'json');
+
+    });
+
+    $('.f-back').click(function(e){
+      e.preventDefault();
+
+      var form = $(this).attr("data-f");
+
+      clearData(form);
 
     });
 
@@ -166,14 +248,27 @@ jQuery(document).ready( function($) {
         enableFormTwo(true);
         $(this).attr('data-b', 0);
         $("#f-step-two-form #apimethod").val("update");
+        $("#step-two-button-next").val("Actualizar");
       }else{
         fillFormTwo(customer_data);
         enableFormTwo(false);
         $(this).attr('data-b', 1);
         $("#f-step-two-form #apimethod").val("create");
+        $("#step-two-button-next").val("Siguiente");
       }
 
     });
+
+    function clearData(step){
+      if(step == 2){
+        $("#f-step-two-form").trigger("reset");
+        $("#step-two").stop().hide();
+        $("#step-one").stop().fadeIn('slow');
+      }else if(step == 3){
+        $("#step-three").stop().hide();
+        $("#step-two").stop().fadeIn('slow');
+      }
+    }
 
     function fillInvoiceContainer(invoice_data, order_data, user_data){
 
@@ -201,23 +296,33 @@ jQuery(document).ready( function($) {
       var products = order_data.line_items;
       var r = new Array(), j = -1;
       for (var key=0, size=products.length; key<size; key++){
+
+          if(products[key]['product_id'] == 'free_shipping' || products[key]['product_id'] == 'local_delivery'){
+              continue;
+          }
+
+          unit_price = products[key]['price'] / 1.16;
+          unit_subtotal = products[key]['quantity'] * unit_price;
+
           r[++j] ='<tr><td>';
           r[++j] = products[key]['name'];
           r[++j] = '</td><td>';
           r[++j] = products[key]['quantity'];
           r[++j] = '</td><td>';
-          r[++j] = products[key]['price'];
+          r[++j] = (unit_price).formatMoney(2, '.', ',');
           r[++j] = '</td><td>';
-          r[++j] = products[key]['subtotal'];
+          r[++j] = (unit_subtotal).formatMoney(2, '.', ',');
           r[++j] = '</td></tr>';
 
-          subtotal = Number(subtotal) + Number(products[key]['subtotal']);
+          subtotal = Number(subtotal) + Number(unit_subtotal);
           taxes    = Number(taxes) + Number(products[key]['total_tax']);
 
+          unit_price = 0;
       }
       $('#datails-body').html(r.join(''));
 
       var grand_total = Number(order_data.total);
+      var total_iva = grand_total * 0.16;
       var payment_method;
 
       if(order_data.payment_details.method_id == "paypal"){
@@ -226,11 +331,13 @@ jQuery(document).ready( function($) {
         payment_method = "Depósito en Cuenta";
       }
 
+      total_iva = subtotal*0.16;
+      total = Math.round(subtotal+total_iva);
 
       $('#invoice-pmethod').text(payment_method); //order_data.payment_details.paid (para saber si está pagado)
-      $('#invoice-subtotal').text(subtotal.toFixed(2));
-      $('#invoice-iva').text(taxes.toFixed(2));
-      $('#invoice-total').text(grand_total.toFixed(2));
+      $('#invoice-subtotal').text(subtotal.formatMoney(2, '.', ','));
+      $('#invoice-iva').text((total_iva).formatMoney(2, '.', ','));
+      $('#invoice-total').text((total).formatMoney(2, '.', ','));
 
     }
 
@@ -255,6 +362,9 @@ jQuery(document).ready( function($) {
         $('#fiscal-cp').removeAttr('readonly');
         $('#fiscal-telefono').removeAttr('readonly');
         $('#step-two-button-edit').val('Cancelar');
+        var $labels = $("#f-step-two-form label[for]");
+        $labels.css({'border-color':'#67BA2F'});
+
       }else{
         $('#general-nombre').attr('readonly','readonly');
         $('#general-apellidos').attr('readonly','readonly');
@@ -274,6 +384,8 @@ jQuery(document).ready( function($) {
         $('#fiscal-cp').attr('readonly','readonly');
         $('#fiscal-telefono').attr('readonly','readonly');
         $('#step-two-button-edit').val('Editar');
+        var $labels = $("#f-step-two-form label[for]");
+        $labels.css({'border-color':'#c2c2c2'});
       }
     }
 
@@ -308,24 +420,31 @@ jQuery(document).ready( function($) {
         var email_item = $("#f-email");
 
         if(rfc_item.val().length == 0){
+          $("label[for='"+rfc_item.attr('id')+"']").addClass("input_error");
           rfc_item.addClass("input_error");
         }else{
+          $("label[for='"+rfc_item.attr('id')+"']").removeClass("input_error");
           rfc_item.removeClass("input_error");
         }
 
         if(order_item.val().length == 0){
+          $("label[for='"+order_item.attr('id')+"']").addClass("input_error");
           order_item.addClass("input_error");
         }else{
+          $("label[for='"+order_item.attr('id')+"']").removeClass("input_error");
           order_item.removeClass("input_error");
         }
 
         if(email_item.val().length == 0){
+          $("label[for='"+email_item.attr('id')+"']").addClass("input_error");
           email_item.addClass("input_error");
         }else{
+          $("label[for='"+email_item.attr('id')+"']").removeClass("input_error");
           email_item.removeClass("input_error");
         }
 
         if(rfc_item.val().length > 13 || rfc_item.val().length < 12){
+          $("label[for='"+rfc_item.attr('id')+"']").addClass("input_error");
           rfc_item.addClass("input_error");
           return false;
         }
@@ -340,6 +459,10 @@ jQuery(document).ready( function($) {
           rfc_item.removeClass("input_error");
           order_item.removeClass("input_error");
           email_item.removeClass("input_error");
+          $("label[for='"+rfc_item.attr('id')+"']").removeClass("input_error");
+          $("label[for='"+order_item.attr('id')+"']").removeClass("input_error");
+          $("label[for='"+email_item.attr('id')+"']").removeClass("input_error");
+
           $('#error_msj').text('').hide();
           return true;
         }else{
@@ -361,9 +484,11 @@ jQuery(document).ready( function($) {
           }
 
           if(item.val().length == 0){
+            $("label[for='"+item.attr('id')+"']").addClass("input_error");
             item.addClass("input_error");
             isValid.push("false");
           }else{
+            $("label[for='"+item.attr('id')+"']").removeClass("input_error");
             item.removeClass("input_error");
             isValid.push("true");
           }
@@ -386,4 +511,9 @@ jQuery(document).ready( function($) {
 
       return false;
     }
+
+    function clearVariables(){
+
+    }
+
 });

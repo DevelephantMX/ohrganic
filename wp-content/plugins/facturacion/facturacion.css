@@ -19,6 +19,14 @@
   display: none;
   padding: 10%;
 }
+#out-message h3{
+  font-size: 15px;
+  text-align: center;
+  text-transform: none;
+}
+#out-message h3 strong{
+  font-size: 15px;
+}
 #f-start{
   width: 250px;
   height: 45px;
@@ -32,6 +40,7 @@
   font-size: 16px;
   line-height: 1;
   box-shadow: none;
+  text-transform: uppercase;
 }
 #f-start:hover{
   background-color: #E73E36 !important;color: #FFFFFF !important;
@@ -69,10 +78,12 @@
   width: 500px;
   margin: 0 auto;
   border-radius: 8px;
+  position: relative;
+  z-index: 100;
 }
 .step-header{
   width: 100%;
-  background: #4C637B;
+  background: #CE3729;
   border-radius: 5px 5px 0 0;
 }
 .step-header h1{
@@ -141,34 +152,94 @@
 }
 .step-block .step-content form .f-input{
   display: block;
-  width: 378px;
+  width: 400px;
   margin: 8px auto;
   border-radius: 5px;
   border: 1px solid #c2c2c2;
   padding: 10px;
+  padding-left: 170px;
   color: #4C637B;
   font-family: 'Open Sans', sans-serif;
   font-size: 14px;
+  height: 43px;
+}
+
+#f-step-one-form label, #f-step-two-form label, #payment-method-form label{
+  width: 160px;
+  position: absolute;
+  padding: 11px;
+  height: 43px;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 14px;
+  border: 1px solid #c2c2c2;
+  border-radius: 5px 0 0 5px;
+}
+#f-step-two-form label{
+  margin: 0 !important;
+}
+.step-block .step-content form .f-select{
+  background: #FFFFFF;
+  cursor: pointer;
+  margin: 0;
+}
+.step-block .step-content form .f-digits{
+  padding-left: 295px;
+}
+#payment-method-form label{
+
+}
+#f-step-two-form .input-group.float-left{
+  width: 49%;
+  display: inline-block;
+  margin: 0px 0px 0px;
+  vertical-align: top;
+}
+#f-step-two-form .input-group{
+  display: table;
+  width: 100%;
+  margin: 8px auto;
+}
+#f-step-two-form .input-group .f-input{
+  margin: 0 !important;
+}
+
+#f-step-two-form{
+  width: 100%;
+}
+#f-step-two-form label{
+  width: 170px;
+  margin: 5px auto;
+  height: 43px;
 }
 #f-step-two-form .f-input{
-  border-color: #67BA2F;
+  border-color: #67BA2F;width: 100%;
+  padding-left: 180px;
 }
 #f-step-two-form .f-input:read-only{
   border-color: #c2c2c2;
 }
-.step-block .step-content form .f-submit{
-  background: #67BA2F !important;
-  border: #67BA2F !important;
+.buttons-right{
+  text-align: right;
+}
+#num-cta-box{
+  display: none;
+}
+.step-block .step-content .f-submit{
+  background: #1b1a26 !important;
+  border: #1b1a26 !important;
   border-radius: 5px;
   padding: 13px 20px;
-  float: right;
+  display: inline-block;
   font-family: 'Open Sans', sans-serif;
   font-weight: 700;
   margin: 0;
 }
 .step-block .step-content form .f-submit:hover{
-  background: #58A525 !important;
-  border: #58A525 !important;
+  background: #A09FA0 !important;
+  border: #A09FA0 !important;
+}
+.step-block .step-content form .f-back{
+  margin-right: 15px;
 }
 .step-block .step-content form .f-edit{
   margin-right: 15px;
@@ -230,6 +301,7 @@
 }
 #step-two{
   display: none;
+  width: 100%;
 }
 
 #error_msj{
@@ -250,9 +322,8 @@
 #fiscal-cp, #fiscal-pais,
 #fiscal-delegacion, #fiscal-telefono {
   display: inline-block;
-  width: 170px;
+  width: 190px;
   vertical-align: top;
-  float: left;
 }
 .f-right{
   float: right !important;
@@ -286,19 +357,20 @@
 .buttons_container h1{
   font-size: 20px;
   margin: 0 auto 40px;
+  text-transform: uppercase;
 }
 .buttons_container .invoice-button{
   float: none;
   display: none;
+  color: #FFFFFF;
 }
 .buttons_container .invoice-button:hover{
-  background: #58A525 !important;
-  border: #58A525 !important;
+  background: #A09FA0 !important;
+  border-color: #A09FA0 !important;
 }
 .buttons_container #result-msg{
-  color: #FF0000;font-size: 14px;
+  color: #FF0000;font-size: 14px;margin-bottom: 50px;
 }
-
 .step-invoice{
   width: 100%;
 }
@@ -349,12 +421,14 @@ table {
 table thead td{
   font-weight: 700;
   font-family: 'Open Sans', sans-serif;
+  padding: 5px;
 }
 table tbody td {
   /* color: #7D7D7D; */
   border-bottom: 1px solid #d6d6d6;
   font-size: 12px;
   font-weight: normal;
+  padding: 5px;
 }
 
 .invoice-totals table{
@@ -383,8 +457,8 @@ table tbody td {
   font-size: 15px;
   text-transform: uppercase;
   font-weight: 600;
-  background: #4C637B;
-  border: 1px solid #4C637B;
+  background: #4C637B !important;
+  border: 1px solid #4C637B !important;
 }
 .invoice-button:hover,
 .invoice-button:active,
@@ -394,19 +468,115 @@ table tbody td {
   background: #38516B !important;
   border: 1px solid #38516B !important;
 }
+/*
 .invoice-pdf{
-  /*
   background-image: url('pdf-icon.png');
   background-repeat: no-repeat;
   background-position: 10px center;
   padding-left: 40px;
-  */
 }
 .invoice-xml{
-  /*
   background-image: url('pdf-icon.png');
   background-repeat: no-repeat;
   background-position: 10px center;
   padding-left: 40px;
-  */
+
+}
+.invoice-email{
+  background-image: url('email-icon.png');
+  background-repeat: no-repeat;
+  background-position: 10px center;
+  padding-left: 40px;
+}
+*/
+.email-msg{
+  position: relative;
+  font-size: 12px;
+  color: rgb(27, 26, 38);
+  bottom: 5px;
+}
+#result-email-msg{
+  font-size: 16px;
+}
+#result-email-msg.success{
+  color: #67BA2F;
+}
+#result-email-msg.error{
+  color: red;
+}
+.loader_content{
+  background: white;
+  display: none;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 10000000;
+}
+.loader {
+  width: 250px;
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+      -ms-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  font-family: helvetica, arial, sans-serif;
+  text-transform: uppercase;
+  font-weight: 900;
+  color: #D1382C;
+  letter-spacing: 0.2em;
+}
+.loader::before, .loader::after {
+  content: "";
+  display: block;
+  width: 15px;
+  height: 15px;
+  background: #D1382C;
+  position: absolute;
+  -webkit-animation: load .7s infinite alternate ease-in-out;
+          animation: load .7s infinite alternate ease-in-out;
+}
+.loader::before {
+  top: 0;
+}
+.loader::after {
+  bottom: 0;
+}
+
+@-webkit-keyframes load {
+  0% {
+    left: 0;
+    height: 30px;
+    width: 15px;
+  }
+  50% {
+    height: 8px;
+    width: 40px;
+  }
+  100% {
+    left: 235px;
+    height: 30px;
+    width: 15px;
+  }
+}
+
+@keyframes load {
+  0% {
+    left: 0;
+    height: 30px;
+    width: 15px;
+  }
+  50% {
+    height: 8px;
+    width: 40px;
+  }
+  100% {
+    left: 235px;
+    height: 30px;
+    width: 15px;
+  }
 }
